@@ -1,0 +1,6 @@
+{
+    "base_url": "https://bvnksimulator.pythonanywhere.com",
+    "fees": {
+        "service_fee": 0.01
+    }
+}
