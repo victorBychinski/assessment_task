@@ -59,6 +59,26 @@ class Config:
         return self._data.get("base_url", "")
     
     @property
+    def api_version(self) -> str:
+        """
+        Get the API version from configuration.
+        
+        Returns:
+            str: API version string
+        """
+        return self._data.get("api_version", "")
+    
+    @property
+    def quote_expiry_time_sec(self) -> int:
+        """
+        Get the quote expiry time in seconds from configuration.
+        
+        Returns:
+            int: Quote expiry time in seconds
+        """
+        return self._data.get("quote_expiry_time_sec", 20)
+    
+    @property
     def service_fee(self) -> float:
         """
         Get the service fee from configuration.
@@ -67,6 +87,7 @@ class Config:
             float: Service fee percentage
         """
         return self._data.get("fees", {}).get("service_fee", 0.0)
+    
     
     def get(self, key: str, default: Any = None) -> Any:
         """
