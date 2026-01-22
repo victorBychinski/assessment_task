@@ -1,0 +1,3 @@
+
+class CurrencyConversionService:
+    pass
