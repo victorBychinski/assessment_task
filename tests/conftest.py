@@ -1,5 +1,7 @@
 import pytest
 import logging
+from clients.api_client import ApiClient
+from clients.authorization_client import AuthorizationClient
 from configuration.config_manager import Config
 
 
@@ -47,7 +49,29 @@ def logger() -> logging.Logger:
     """
     return __setup_logging()
 
-        
+
+@pytest.fixture(scope="session")
+def api_client(config, logger) -> ApiClient:
+    """
+    Provides the API client.
+    
+    Returns:
+        api_client: API client instance
+    """
+    return ApiClient(base_url=config.base_url, logger=logger)
+
+@pytest.fixture(scope="session")
+def authorization_client(api_client, logger) -> AuthorizationClient:
+    """
+    Provides the Authorization client.
+    
+    Returns:
+        authorization_client: Authorization client instance
+    """
+    
+    return AuthorizationClient(client=api_client, logger=logger)
+      
+      
 def __setup_logging() -> logging.Logger:
     """
     Sets up logger with appropriate format and level.
