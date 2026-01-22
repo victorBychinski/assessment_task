@@ -1,0 +1,20 @@
+from clients.api_client import ApiClient
+from typing import Any, Dict
+import logging
+
+class WalletClient:
+    def __init__(self, api_client: ApiClient, logger: logging.Logger, api_version: str = "v1") -> None:
+        self.api_client = api_client
+        self.logger = logger
+        self.api_version = api_version
+
+    def get_all_wallets(self, offset: int, max_count: int) -> Dict[str, Any]:
+        self.logger.info("Fetching all wallets ...")
+        params = {"offset": offset, "max_count": max_count}
+        response = self.api_client.get("/api/wallet", params=params)
+        return response
+    
+    def get_single_wallet(self, wallet_id: str) -> Dict[str, Any]:
+        self.logger.info(f"Fetching wallet with ID: {wallet_id} ...")
+        response = self.api_client.get(f"/api/wallet/{wallet_id}")
+        return response
