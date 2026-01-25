@@ -88,6 +88,16 @@ class Config:
         """
         return self._data.get("fees", {}).get("service_fee", 0.0)
     
+    @property
+    def decimal_precision(self) -> int:
+        """
+        Get the decimal precision for currency amounts from configuration.
+        
+        Returns:
+            int: Number of decimal places
+        """
+        return self._data.get("decimal_precision", 2)
+    
     
     def get(self, key: str, default: Any = None) -> Any:
         """

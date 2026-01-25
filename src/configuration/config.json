@@ -2,6 +2,7 @@
     "base_url": "https://bvnksimulator.pythonanywhere.com",
     "api_version": "v1",
     "quote_expiry_time_sec": 20,
+    "decimal_precision": 6,
     "fees": {
         "service_fee": 0.01
     }
