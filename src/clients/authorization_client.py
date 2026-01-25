@@ -15,22 +15,24 @@ class AuthorizationClient:
     def init(self) -> TokenResponse:
         self.logger.info("Calling init to initialize new user and get token ...")
         response = self.client.get("/init")
-        result = TokenResponse(**response)
+        result = TokenResponse(**response.json())
         self._token = result.access_token
         return result
 
     def echo(self, data: Dict[str, Any]) -> Dict[str, Any]:
         self.logger.info("Calling echo endpoint ...")
         response = self.client.post("/echo", data)
-        return response
+        return response.json()
     
     def health(self) -> Dict[str, Any]:
         self.logger.info("Calling health endpoint ...")
         response = self.client.get("/health")
-        return response
-    
+        return response.json()
+
     def get_api_client_with_token(self) -> ApiClient:
         self.logger.info("Updating ApiClient with provided token ...")
+        if self._token is None:
+                self.init()
         self.client.set_auth_token(self._token)
         return self.client
     
