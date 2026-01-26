@@ -68,7 +68,7 @@ def logger() -> logging.Logger:
     return __setup_logging()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def api_client(config, logger) -> ApiClient:
     """
     Provides the API client.
@@ -78,7 +78,7 @@ def api_client(config, logger) -> ApiClient:
     """
     return ApiClient(base_url=config.base_url, logger=logger)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def authorization_client(api_client, logger) -> AuthorizationClient:
     """
     Provides the Authorization client.
@@ -89,11 +89,11 @@ def authorization_client(api_client, logger) -> AuthorizationClient:
     
     return AuthorizationClient(client=api_client, logger=logger)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def authorized_api_client(authorization_client) -> ApiClient:
     return authorization_client.get_api_client_with_token()
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def quote_client(authorized_api_client, config, logger) -> QuoteClient:
     """
     Provides the Quote client.
@@ -103,7 +103,7 @@ def quote_client(authorized_api_client, config, logger) -> QuoteClient:
     """
     return QuoteClient(client=authorized_api_client, logger=logger, api_version=config.api_version)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def wallet_client(authorized_api_client, config, logger) -> WalletClient:
     """
     Provides the Wallet client.
@@ -113,7 +113,7 @@ def wallet_client(authorized_api_client, config, logger) -> WalletClient:
     """
     return WalletClient(client=authorized_api_client, logger=logger, api_version=config.api_version)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def converter_service(quote_client, wallet_client, logger) -> CurrencyConversionService:
     """
     Provides the Currency Conversion Service.

@@ -89,7 +89,6 @@ class CurrencyConversionService:
         return self._parse_list(all_wallets_response, Wallet)
     
     def __find_wallet_by_currency(self, wallets: List[Wallet], currency: str) -> Wallet:
-        
         wallet = next(
             (w for w in wallets if w.currency.code.lower() == currency.lower()),
             None
@@ -104,8 +103,6 @@ class CurrencyConversionService:
             
         return wallet
     
-
-
     def construct_new_quote_request( self,
     currency_in: str,
     currency_out: str,
