@@ -14,6 +14,6 @@ class WalletClient:
         params = {"offset": offset, "max_count": max_count}
         return self.api_client.get("/api/wallet", params=params)
 
-    def get_single_wallet(self, wallet_id: str) -> httpx.Response:
+    def get_single_wallet(self, wallet_id: int) -> httpx.Response:
         self.logger.info(f"Fetching wallet with ID: {wallet_id} ...")
         return self.api_client.get(f"/api/wallet/{wallet_id}")

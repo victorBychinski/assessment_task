@@ -54,7 +54,7 @@ class CurrencyConversionService:
     def get_wallets(self, offset: int, max_count: int) -> List[Wallet]:
         return self.__get_all_wallets(offset, max_count)
 
-    def get_wallet_by_id(self, wallet_id: str) -> Wallet:
+    def get_wallet_by_id(self, wallet_id: int) -> Wallet:
         response = self.wallet_client.get_single_wallet(wallet_id)
         return self._parse_single(response, Wallet)
 
