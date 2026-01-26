@@ -15,7 +15,7 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:victorBychinski/assessment_task.git
    cd <assessment_task_path>
    ```
 
