@@ -57,3 +57,17 @@ def is_quote_fee_as_expected(quote: Quote, expected_fee: float) -> bool:
         bool: True if the quote fee matches the expected fee, False otherwise.
     """
     return quote.fee == expected_fee
+
+
+def are_quote_currencies_valid(quote: Quote, currency_in: str, currency_out: str) -> bool:
+    """
+    Check if the quote currencies match the expected input and output currencies.
+    
+    Args:
+        quote (Quote): A quote object.
+        currency_in (str): Expected input currency.
+        currency_out (str): Expected output currency.
+    Returns:
+        bool: True if the quote currencies match, False otherwise.
+    """
+    return quote.from_currency == currency_in and quote.to_currency == currency_out
