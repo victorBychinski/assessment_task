@@ -33,7 +33,7 @@ class CurrencyConversionService:
                 wallet = self.__find_wallet_by_currency(all_wallets, currency_out)
                 if wallet:
                     wallet_out_id = wallet.id
-        payload = self.__constract_new_quote_request(currency_in, currency_out, amount_in, wallet_in_id, wallet_out_id)
+        payload = self.constract_new_quote_request(currency_in, currency_out, amount_in, wallet_in_id, wallet_out_id)
         
         response = self.quote_client.create_quote(payload)
         response.raise_for_status()
@@ -51,7 +51,7 @@ class CurrencyConversionService:
         response.raise_for_status()
         return self._parse_list(response, Quote)
 
-    def get_wallets(self, offset: int, max_count: int) -> List[Wallet]:
+    def get_wallets(self, offset: int=0, max_count: int=100) -> List[Wallet]:
         return self.__get_all_wallets(offset, max_count)
 
     def get_wallet_by_id(self, wallet_id: int) -> Wallet:
@@ -110,7 +110,7 @@ class CurrencyConversionService:
     
 
 
-    def __constract_new_quote_request( self,
+    def constract_new_quote_request( self,
     currency_in: str,
     currency_out: str,
     amount_in: Decimal,

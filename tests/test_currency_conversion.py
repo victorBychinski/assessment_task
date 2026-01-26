@@ -1,9 +1,7 @@
 import pytest
-import logging
 from clients.authorization_client import AuthorizationClient
 from http import HTTPStatus
 from models.responses.quote import Quote
-from models.token_response import TokenResponse
 from services.currency_conversion_service import CurrencyConversionService
 from utils.quote_utils import *
 from utils.wallet_utils import is_wallet_balance_valid
