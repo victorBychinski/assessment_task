@@ -35,6 +35,9 @@ Run the full suite with default settings from `config.json`:
 ```bash
 uv run pytest
 ```
+### NOTE
+ 
+    2 tests are failing since service fees had been checked and for some reason for 420 and 987 amounts fee does not match with expected 0.01% - it is 0.042%
 
 #### Execution with CLI Parameters
 
