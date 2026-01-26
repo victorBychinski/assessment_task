@@ -33,7 +33,7 @@ class CurrencyConversionService:
                 wallet = self.__find_wallet_by_currency(all_wallets, currency_out)
                 if wallet:
                     wallet_out_id = wallet.id
-        payload = self.constract_new_quote_request(currency_in, currency_out, amount_in, wallet_in_id, wallet_out_id)
+        payload = self.construct_new_quote_request(currency_in, currency_out, amount_in, wallet_in_id, wallet_out_id)
         
         response = self.quote_client.create_quote(payload)
         response.raise_for_status()
@@ -110,7 +110,7 @@ class CurrencyConversionService:
     
 
 
-    def constract_new_quote_request( self,
+    def construct_new_quote_request( self,
     currency_in: str,
     currency_out: str,
     amount_in: Decimal,
