@@ -5,43 +5,26 @@ from typing import Optional, Dict, Any
 
 class Config:
     """
-    Configuration manager that loads config.json settings.
-    
-    Provides access to configuration values.
+    Configuration manager that loads config.json settings and supports CLI overrides.
     """
     
-    def __init__(self, config_file: Optional[Path] = None):
+    def __init__(self, config_file: Optional[Path] = None, overrides: Optional[Dict[str, Any]] = None):
         """
-        Initialize the Config manager.
+        Initialize the Config manager with optional CLI overrides.
         
         Args:
-            config_file: Optional path to config.json. If not provided,
-                        uses the default location (src/configuration/config.json)
+            config_file: Optional path to config.json.
+            overrides: Optional dictionary of CLI parameters (e.g., from conftest.py).
         """
         self.config_file = config_file or self._default_config_path()
         self._data = self._load()
+        self._overrides = overrides or {}
     
     @staticmethod
     def _default_config_path() -> Path:
-        """
-        Get the default configuration file path.
-        
-        Returns:
-            Path: Path to config.json in the same directory
-        """
         return Path(__file__).parent / "config.json"
     
     def _load(self) -> Dict[str, Any]:
-        """
-        Load and parse the JSON configuration file.
-        
-        Returns:
-            dict: Parsed configuration data
-            
-        Raises:
-            FileNotFoundError: If config file doesn't exist
-            json.JSONDecodeError: If config file is invalid JSON
-        """
         if not self.config_file.exists():
             raise FileNotFoundError(f"Configuration file not found: {self.config_file}")
         
@@ -50,66 +33,37 @@ class Config:
     
     @property
     def base_url(self) -> str:
-        """
-        Get the base URL from configuration.
-        
-        Returns:
-            str: Base URL for API requests
-        """
-        return self._data.get("base_url", "")
+        """Priority: 1. CLI Override -> 2. JSON Config -> 3. Default Empty String"""
+        return self._overrides.get("base_url") or self._data.get("base_url", "")
     
     @property
     def api_version(self) -> str:
-        """
-        Get the API version from configuration.
-        
-        Returns:
-            str: API version string
-        """
-        return self._data.get("api_version", "")
+        return self._data.get("api_version", "v1")
     
     @property
-    def quote_expiry_time_sec(self) -> int:
-        """
-        Get the quote expiry time in seconds from configuration.
-        
-        Returns:
-            int: Quote expiry time in seconds
-        """
-        return self._data.get("quote_expiry_time_sec", 20)
+    def quote_expiry_time_sec(self) -> float:
+        return float(self._data.get("quote_expiry_time_sec", 20))
     
     @property
     def service_fee(self) -> float:
-        """
-        Get the service fee from configuration.
-        
-        Returns:
-            float: Service fee percentage
-        """
-        return self._data.get("fees", {}).get("service_fee", 0.0)
+        """Priority: 1. CLI Override -> 2. JSON Config -> 3. Default 0.0"""
+        fee = self._overrides.get("fee")
+        if fee is not None:
+            return float(fee)
+        return float(self._data.get("fees", {}).get("service_fee", 0.0))
     
     @property
     def decimal_precision(self) -> int:
-        """
-        Get the decimal precision for currency amounts from configuration.
-        
-        Returns:
-            int: Number of decimal places
-        """
-        return self._data.get("decimal_precision", 2)
-    
-    
+        """Priority: 1. CLI Override -> 2. JSON Config -> 3. Default 2"""
+        precision = self._overrides.get("precision")
+        if precision is not None:
+            return int(precision)
+        return int(self._data.get("decimal_precision", 2))
+
     def get(self, key: str, default: Any = None) -> Any:
-        """
-        Get a configuration value by key.
-        
-        Args:
-            key: Configuration key (supports nested keys with dot notation)
-            default: Default value if key not found
+        if key in self._overrides and self._overrides[key] is not None:
+            return self._overrides[key]
             
-        Returns:
-            Any: Configuration value or default
-        """
         if "." in key:
             keys = key.split(".")
             value = self._data
@@ -120,34 +74,19 @@ class Config:
             return value
         return self._data.get(key, default)
     
-    def __getitem__(self, key: str) -> Any:
-        """
-        Allow dictionary-style access to configuration.
-        
-        Args:
-            key: Configuration key
-            
-        Returns:
-            Any: Configuration value
-            
-        Raises:
-            KeyError: If key not found
-        """
-        return self._data[key]
-    
-    def __contains__(self, key: str) -> bool:
-        """Check if a key exists in configuration."""
-        return key in self._data
-    
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Get the entire configuration as a dictionary.
-        
-        Returns:
-            dict: Complete configuration data
-        """
-        return self._data.copy()
-    
+        """Returns a merged view of the config for logging purposes."""
+        merged = self._data.copy()
+        # Update with non-None overrides
+        for k, v in self._overrides.items():
+            if v is not None:
+                if k == "fee": # Map CLI 'fee' to the 'fees' nested structure if needed
+                    merged.setdefault("fees", {})["service_fee"] = v
+                elif k == "precision":
+                    merged["decimal_precision"] = v
+                else:
+                    merged[k] = v
+        return merged
+
     def __repr__(self) -> str:
-        """String representation of the Config object."""
-        return f"Config(file={self.config_file}, keys={list(self._data.keys())})"
+        return f"Config(base_url={self.base_url}, fee={self.service_fee}, precision={self.decimal_precision})"

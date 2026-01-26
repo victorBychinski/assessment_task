@@ -9,19 +9,23 @@ from configuration.config_manager import Config
 from services.currency_conversion_service import CurrencyConversionService
 
 
-@pytest.fixture(scope="session")
-def config() -> Config:
-    """
-    Session-scoped fixture that provides the Config object.
+def pytest_addoption(parser):
+    parser.addoption("--base-url", action="store", default=None, help="Base URL for the API")
+    parser.addoption("--fee", action="store", default=None, help="Service fee percentage (e.g. 0.01)")
+    parser.addoption( "--precision", action="store", default=None, help="Decimal precision for amounts")
     
-    Returns:
-        Config: Configuration manager object
-    """
-    return Config()
+@pytest.fixture(scope="session")
+def config(request) -> Config:
+    overrides = {
+        "base_url": request.config.getoption("--base-url"),
+        "fee": request.config.getoption("--fee"),
+        "precision": request.config.getoption("--precision"),
+    }
+    return Config(overrides=overrides)
 
 
 @pytest.fixture(scope="session")
-def base_url(config) -> str:
+def base_url(request, config) -> str:
     """
     Provides the base URL from configuration.
     
@@ -118,7 +122,7 @@ def converter_service(quote_client, wallet_client, logger) -> CurrencyConversion
         converter_service: Currency Conversion Service instance
     """
     
-    return CurrencyConversionService(quote_client=quote_client, wallet_client=wallet_client, logger=logger)
+    return CurrencyConversionService(quote_client=quote_client(), wallet_client=wallet_client, logger=logger)
 
 def __setup_logging() -> logging.Logger:
     """
