@@ -12,29 +12,34 @@ class ApiClient:
         self._auth_token = auth_token
         self.logger = logger
         self.client = httpx.Client(headers=self.get_headers())
-
-    def __enter__(self) -> "ApiClient":
-        return self
-
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        self.client.close()
-
+        
     def get(self, endpoint: str, params: Optional[Dict[str, Any]] = None, timeout: float = DEFAULT_TIMEOUT_SEC) -> httpx.Response:
         self.logger.info(f"Making GET request to {endpoint} with params {params}...")
+        if params:
+            self.logger.debug(f"GET {endpoint} params: {params}")
         url = urljoin(self.base_url, endpoint)
-        return self.client.get(url, params=params, timeout=timeout)
+        response = self.client.get(url, params=params, timeout=timeout)
+        self.logger.debug(f"GET {endpoint} response status: {response.status_code}, body: {response.text[:500]}")
+        return response
 
     def post(self, endpoint: str, data: Optional[str | Dict[str, Any]] = None, timeout: float = DEFAULT_TIMEOUT_SEC) -> httpx.Response:
-        self.logger.info(f"Making POST request to {endpoint} with data {data}...")
+        self.logger.info(f"Making POST request to {endpoint}...")
+        self.logger.debug(f"POST {endpoint} request body: {data}")
         url = urljoin(self.base_url, endpoint)
         if isinstance(data, str):
-            return self.client.post(url, data=data, timeout=timeout)
-        return self.client.post(url, json=data, timeout=timeout)
+            response = self.client.post(url, data=data, timeout=timeout)
+        else:
+            response = self.client.post(url, json=data, timeout=timeout)
+        self.logger.debug(f"POST {endpoint} response status: {response.status_code}, body: {response.text[:500]}")
+        return response
 
     def put(self, endpoint: str, data: Optional[Dict[str, Any]] = None, timeout: float = DEFAULT_TIMEOUT_SEC) -> httpx.Response:
-        self.logger.info(f"Making PUT request to {endpoint} with data {data}...")
+        self.logger.info(f"Making PUT request to {endpoint}...")
+        self.logger.debug(f"PUT {endpoint} request body: {data}")
         url = urljoin(self.base_url, endpoint)
-        return self.client.put(url, json=data, timeout=timeout)
+        response = self.client.put(url, json=data, timeout=timeout)
+        self.logger.debug(f"PUT {endpoint} response status: {response.status_code}, body: {response.text[:500]}")
+        return response
 
     def set_auth_token(self, token: str) -> None:
         self._auth_token = token

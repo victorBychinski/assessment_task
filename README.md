@@ -73,6 +73,8 @@ uv run pytest -m e2e
 - No reporting integration
 - No Dockerization
 - Models validation and required fields rules are not added for simplicity.
+- Logging in not fully implemented and quite basic
+- Docstrings are missing
 
 ### TODO
 
