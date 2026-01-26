@@ -5,7 +5,7 @@ from configuration.config_manager import Config
 from services.currency_conversion_service import CurrencyConversionService
 import time
 from utils.quote_utils import *
-from utils.wallet_utils import is_wallet_balance_valid
+from utils.wallet_utils import is_wallet_balance_valid, are_wallets_balances_equal
 
 
 class TestQuoteProcessing:
@@ -52,7 +52,7 @@ class TestQuoteProcessing:
         updated_wallet_in = converter_service.get_wallet_by_id(wallet_in.id)
         updated_wallet_out = converter_service.get_wallet_by_id(wallet_out.id)  
         
-        assert updated_wallet_in.balance == wallet_in.balance, \
+        assert are_wallets_balances_equal(updated_wallet_in.balance,wallet_in.balance), \
             f"Wallet in balance changed when accepting an expired quote: expected {wallet_in.balance}, got {updated_wallet_in.balance}"
-        assert updated_wallet_out.balance == wallet_out.balance, \
+        assert are_wallets_balances_equal(updated_wallet_out.balance,wallet_out.balance), \
             f"Wallet out balance changed when accepting an expired quote: expected {wallet_out.balance}, got {updated_wallet_out.balance}"

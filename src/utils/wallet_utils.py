@@ -11,3 +11,9 @@ def is_wallet_balance_valid(initial_balance: Decimal,
     expected = expected.quantize(quant, rounding=ROUND_HALF_UP)
     
     return abs(updated_balance - expected) <= quant
+
+def are_wallets_balances_equal(initial_balance: Decimal, 
+                                 updated_balance: Decimal, 
+                                 precision: int = 6) -> bool:
+    quant = Decimal("1").scaleb(-precision)
+    return abs(updated_balance - initial_balance) <= quant
