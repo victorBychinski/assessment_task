@@ -122,7 +122,7 @@ def converter_service(quote_client, wallet_client, logger) -> CurrencyConversion
         converter_service: Currency Conversion Service instance
     """
     
-    return CurrencyConversionService(quote_client=quote_client(), wallet_client=wallet_client, logger=logger)
+    return CurrencyConversionService(quote_client=quote_client, wallet_client=wallet_client, logger=logger)
 
 def __setup_logging() -> logging.Logger:
     """

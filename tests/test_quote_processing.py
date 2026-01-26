@@ -53,6 +53,6 @@ class TestQuoteProcessing:
         updated_wallet_out = converter_service.get_wallet_by_id(wallet_out.id)  
         
         assert updated_wallet_in.balance == wallet_in.balance, \
-            "Wallet in balance changed  when accepting an expired quote"
+            f"Wallet in balance changed when accepting an expired quote: expected {wallet_in.balance}, got {updated_wallet_in.balance}"
         assert updated_wallet_out.balance == wallet_out.balance, \
-            "Wallet out balance changed when accepting an expired quote"
+            f"Wallet out balance changed when accepting an expired quote: expected {wallet_out.balance}, got {updated_wallet_out.balance}"
